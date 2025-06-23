@@ -7,6 +7,7 @@ class RAGSourceType(Enum):
     NONE = "none"
     VECTORIZE = "vectorize"
     PINECONE = "pinecone"
+    COMBINED = "combined"
 
 
 class RAGSourceBase(ABC):

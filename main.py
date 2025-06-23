@@ -7,11 +7,12 @@ from cli_interface import CLIInterface, Config, Colors
 from rag_source_base import RAGSourceType, RAGSourceBase
 from vectorize_wrapper import VectorizeWrapper
 from pinecone_wrapper import PineconeWrapper
+from combined_wrapper import CombinedWrapper
 
 # This is just to suppress warnings in our terminal
 warnings.filterwarnings("ignore", message="Pydantic serializer warnings")
 
-RAG_SOURCE = RAGSourceType.VECTORIZE
+RAG_SOURCE = RAGSourceType.COMBINED  # Use combined RAG and recipe functionality
 
 
 def load_environment():
@@ -36,6 +37,9 @@ def get_rag_source() -> tuple[RAGSourceBase | None, list[str]]:
     elif RAG_SOURCE == RAGSourceType.PINECONE:
         wrapper = PineconeWrapper()
         return wrapper, wrapper.get_required_env_vars()
+    elif RAG_SOURCE == RAGSourceType.COMBINED:
+        wrapper = CombinedWrapper()
+        return wrapper, wrapper.get_required_env_vars()
     else:
         raise ValueError(f"Unknown RAG source type: {RAG_SOURCE}")
 
@@ -59,7 +63,8 @@ def main():
     app_name_suffix = {
         RAGSourceType.NONE: "",
         RAGSourceType.VECTORIZE: " with Vectorize",
-        RAGSourceType.PINECONE: " with Pinecone"
+        RAGSourceType.PINECONE: " with Pinecone",
+        RAGSourceType.COMBINED: " with Combined Search"
     }
     app_name = Config.APP_NAME + app_name_suffix.get(RAG_SOURCE, "")
     cli = CLIInterface(app_name)
@@ -96,6 +101,8 @@ def main():
             statuses.append((True, "Connected to Vectorize and OpenAI"))
         elif RAG_SOURCE == RAGSourceType.PINECONE:
             statuses.append((True, "Connected to Pinecone and OpenAI"))
+        elif RAG_SOURCE == RAGSourceType.COMBINED:
+            statuses.append((True, "Connected to Combined Search and OpenAI"))
         else:
             statuses.append((True, "Connected to OpenAI"))
 

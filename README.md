@@ -9,6 +9,7 @@ A flexible Retrieval-Augmented Generation (RAG) chat system that supports multip
 - **Context-Aware Responses**: Generates answers based on retrieved documents and conversation context
 - **Extensible Architecture**: Easy to add new RAG sources by implementing the base interface
 - **Environment-Aware**: Automatically checks for required environment variables based on selected source
+- **Recipe Search**: Built-in recipe search functionality combined with RAG results
 
 ## Quick Start
 
@@ -153,21 +154,77 @@ print(answer)
 
 ## How It Works
 
-### With External RAG Source (Vectorize/Pinecone)
+### Combined Search Mode
 
-1. User asks a question
-2. System queries the RAG source for relevant documents
-3. Retrieved documents are formatted as context
-4. Context + question sent to OpenAI GPT-4o-mini
-5. AI generates answer based on provided context
-6. Answer displayed with source information
+When you ask a question, the system:
 
-### Without External Source
+1. Processes your query through the configured RAG source:
+   - Searches Vectorize (if configured)
+   - Searches Pinecone (if configured)
+   - Or uses no external source
 
-1. User asks a question
-2. Question sent directly to OpenAI GPT-4o-mini
-3. AI generates answer from general knowledge
-4. Answer displayed
+2. Checks for recipe-related content:
+   - Detects cooking-related keywords
+   - Matches against available recipes
+   - Formats recipe information with helpful emojis
+
+3. Combines the results:
+   - RAG results provide general knowledge and context
+   - Recipe results provide specific cooking instructions
+   - All information is clearly labeled in the response
+
+## Recipe Search Feature
+
+The system combines traditional document retrieval with a recipe search feature. When you ask a question, the system will:
+
+1. Search your document collection using the configured RAG source
+2. Check if your question is about any available recipes
+3. Combine both types of results in the response
+
+### Available Food Items and Recipes
+
+You can ask about recipes for the following ingredients:
+
+**Sweet Treats**
+- Chocolate (Rich Chocolate Brownies)
+- Apples (Classic Apple Pie)
+- Bananas (Moist Banana Bread)
+
+**Healthy Options**
+- Almonds (Honey Roasted Almonds)
+- Chia Seeds (Overnight Chia Pudding)
+- Lentils (Spiced Lentil Soup)
+- Avocados (Fresh Guacamole)
+
+### Example Queries
+
+Try asking questions like:
+```
+"Are bananas healthy?"
+"What are the health benefits of apples?"
+"How do I make chocolate brownies?"
+"What can I cook with lentils?"
+"Show me a recipe with almonds"
+"Give me an avocado recipe"
+```
+
+### Recipe Information
+
+Each recipe result includes:
+- 👨‍🍳 Step-by-step cooking instructions
+- ⏱️ Preparation time
+- 👥 Number of servings
+- 📝 Complete ingredient list
+- 💡 Helpful tips and storage information
+
+The system will automatically detect recipe-related questions when you use words like:
+- "recipe"
+- "cook"
+- "make"
+- "prepare"
+- "how to"
+- "bake"
+- "roast"
 
 ## Adding New RAG Sources
 
